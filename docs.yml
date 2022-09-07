@@ -1,0 +1,223 @@
+open api: '3.0.2'
+info:
+  title:
+  description:
+  termsOfService:
+  contact:
+    name: API Support
+    url: http://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: '1.0.0'
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url:
+    variables:
+      environment:
+        default: dev
+        enum:
+          - "prod"
+          - "dev"
+tags:
+  - name: Auth
+    description: Auhentication
+  - name: Users
+    description:  User control
+  - name: Wallets
+    description: Wallet data management
+paths:
+  /login:
+    post:
+      tags:
+        -Auth
+      summary: login User
+      description: Login user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestLogin'
+            examples:
+              userData1:
+                description: "Login user"
+                value: {
+                  email: "coco@gmail.com",
+                  password: "123"
+                }
+              userData2:
+                  description: "Login user"
+                  value: {
+                    email: "coco@gmail.com",
+                    password: "123"
+                  }
+      responses:
+        '200':
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/responseLoginSuccess'
+              examples:
+              responseData1:
+                description: response success 1
+                value: {
+                    code: 200,
+                    status: "success",
+                    message: "Login Success",
+                    data: {
+                      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzgzMjYxODAsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJhZG1pbiJ9.AebFR-oQjUSOMez2ucDWkiMrS2eQIPmcYm5c71qZ_co"
+                    }
+                  }
+              responseData2:
+                description: response success 1
+                value: {
+                    code: 200,
+                    status: "success",
+                    message: "Login Success",
+                    data: {
+                      token: "AyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJleHAiOjE2MzgzMjYxODAsInVzZXJJZCI6MSwidXNlcm5hbWUiOiJhZG1pbiJ9.AebFR-oQjUSOMez2ucDWkiMrS2eQIPmcYm5c71qZ_co"
+                    }
+                  }
+        '400':
+          description: Failed Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/failedResponse'
+              examples:
+                responseData1:
+                  description: response failed 1
+                  value: {
+                    code: 400,
+                    status: "failed",
+                    message: "Login Failed. Email and Password incorrect."
+                  }
+                responseData2:
+                  description: response failed 2
+                  value: {
+                    code: 400,
+                    status: "failed",
+                    message: "Login Failed. Your email doesn't match any entry"
+                  }
+  
+  # USER
+  /users:
+    post:
+      tags:
+        - Users
+      summary: register
+      description: Register user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestUserData'
+            examples:
+              userData1:
+                description: "Example data user"
+                value: {
+                  name: "Alta",
+                  email: "alta@alterra.id",
+                  password: "inipassword",
+                  address: "Jakarta"
+                }
+              userData2:
+                description: "Example data user"
+                value: {
+                  name: "Alta 2",
+                  email: "alta2@alterra.id",
+                  password: "inipassword2",
+                  address: "Jakarta2"
+                }
+      responses:
+        '200':
+          $ref: '#/components/responses/responseSuccess'
+        '400':
+          $ref: '#/components/responses/responseFailed'
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      description: Get user by ID
+      security: 
+        - JWTAuth:  []
+      parameters:
+        - name: id
+          description: id user
+          in: path
+      schema:
+        type: integer
+        example: 1
+      required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/getUserProfileSuccess'
+        '400':
+          $ref: '#/components/responses/getUserProfileFailed'
+    put:
+    
+
+
+
+#COMPONENT
+components:
+
+#JWT
+securitySchemes:
+  JWTAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    description: "use token"
+
+#SCHEMAS
+schemas:
+  requestLogin:
+    type: object
+    properties:
+      "email":
+        type: string
+        minLenght: 1
+      "password":
+        type: string
+        minLenght: 1
+  
+  requestUserData:
+    type: object
+    properties:
+      "name":
+        type: string
+        minLenght: 1
+      "email":
+        type: string
+        minLenght: 1
+      "password":
+        type: string
+        minLenght: 1
+      "address":
+        type: string
+        minLenght: 1
+      
+  responseUserData:
+    type: object
+    properties:
+      "id":
+        type: string
+        minLenght: 1
+      "name":
+        type: string
+        minLenght: 1
+      "email":
+        type: string
+        minLenght: 1
+      "address":
+        type: string
+        minLenght: 1
+  
+  successGetSingleUserResponse:
+
+
+
