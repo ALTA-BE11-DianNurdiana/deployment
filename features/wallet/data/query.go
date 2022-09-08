@@ -16,6 +16,24 @@ func New(db *gorm.DB) wallet.DataInterface {
 	}
 }
 
-// func (repo *walletData) SelectAllWallet() (wallet.Core, error){
-// 	return
-// }
+func (repo *walletData) SelectAllWallet() ([]wallet.Core, error) {
+	var data []Wallet
+	tx := repo.db.Preload("Wallet").Find(&data)
+	// tx := config.DB.Preload("Wallets").Find(&data)
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
+
+	dataCore := toCoreList(data)
+	return dataCore, nil
+}
+
+func (repo *walletData) InsertWallet(data wallet.Core) (int, error) {
+	dataModel := fromCore(data)
+	tx := repo.db.Create(&dataModel)
+	if tx.Error != nil {
+		return 0, tx.Error
+	}
+
+	return int(tx.RowsAffected), nil
+}

@@ -16,9 +16,11 @@ type Core struct {
 }
 
 type UsecaseInterface interface {
-	// GetAllWallet() (data []Core, err error)
+	GetAllWallet() (data []Core, err error)
+	PostWallet(data Core) (row int, err error)
 }
 
 type DataInterface interface {
-	// SelectAllWallet() (data []Core, err error)
+	SelectAllWallet() (data []Core, err error)
+	InsertWallet(data Core) (row int, err error)
 }
