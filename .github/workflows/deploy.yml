@@ -20,7 +20,7 @@ jobs:
           script: |
             cd /home/ubuntu/deployment
             git pull origin main
-            docker stop be11Container1
-            docker rm be11Container1
+            docker stop be11Container2
+            docker rm be11Container2
             docker build -t be11-api:latest .
-            docker run -d -p 8000:8080 -e SERVER_PORT=${{ secrets.SERVER_PORT }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e DB_HOST=${{ secrets.DB_HOST }} -e DB_PORT=${{ secrets.DB_PORT }} -e DB_NAME=${{ secrets.DB_NAME }} --name be11Container1 be11-api:latest
+            docker run -d -p 8000:8080 -e SERVER_PORT=${{ secrets.SERVER_PORT }} -e DB_USERNAME=${{ secrets.DB_USERNAME }} -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} -e DB_HOST=${{ secrets.DB_HOST }} -e DB_PORT=${{ secrets.DB_PORT }} -e DB_NAME=${{ secrets.DB_NAME }} --name be11Container2 be11-api:latest

@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"be11/apiclean/features/wallet"
+	"be11/apiclean/middlewares"
 	"be11/apiclean/utils/helper"
 	"net/http"
 
@@ -18,7 +19,7 @@ func New(e *echo.Echo, usecase wallet.UsecaseInterface) {
 	}
 
 	e.GET("/wallets", handler.GetAllWallet)
-	e.POST("/wallets", handler.PostWallet)
+	e.POST("/wallets", handler.PostWallet, middlewares.JWTMiddleware())
 	// e.GET("/wallets/:id", handler.GetAllWallet)
 }
 
@@ -32,14 +33,17 @@ func (delivery *WalletDelivery) GetAllWallet(c echo.Context) error {
 }
 
 func (delivery *WalletDelivery) PostWallet(c echo.Context) error {
-	// idToken := middlewares.ExtractToken(c)
+
 	var dataRequest WalletRequest
 	errBind := c.Bind(&dataRequest)
 	if errBind != nil {
 		return c.JSON(http.StatusBadRequest, helper.FailedResponseHelper("error bind data"))
 	}
-	// dataCore := toCore(dataRequest)
-	// dataCore.UserID = uint(idToken)
+
+	idToken := middlewares.ExtractToken(c)
+
+	dataCore := toCore(dataRequest)
+	dataCore.UserID = uint(idToken)
 	row, err := delivery.walletUsecase.PostWallet(toCore(dataRequest))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("error insert data"))
