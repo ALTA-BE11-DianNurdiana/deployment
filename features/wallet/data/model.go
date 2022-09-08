@@ -16,28 +16,22 @@ type Wallet struct {
 	User   userModel.User
 }
 
-func fromCore(dataCore wallet.Core) Wallet {
-	dataModel := Wallet{
-		Jenis:  dataCore.Jenis,
-		Nomor:  dataCore.Nomor,
-		UserID: dataCore.UserID,
+func FromCore(data wallet.Core) Wallet {
+	return Wallet{
+		Jenis:  data.Jenis,
+		Nomor:  data.Nomor,
+		UserID: data.UserID,
 	}
-	return dataModel
 }
 
 func (data *Wallet) toCore() wallet.Core {
 	return wallet.Core{
-		ID:        data.ID,
-		Jenis:     data.Jenis,
-		Nomor:     data.Nomor,
-		UserID:    data.UserID,
-		CreatedAt: data.CreatedAt,
-		UpdatedAt: data.UpdatedAt,
+		ID:     data.ID,
+		Jenis:  data.Jenis,
+		Nomor:  data.Nomor,
+		UserID: data.UserID,
 		User: user.Core{
-			ID:      data.User.ID,
-			Name:    data.User.Name,
-			Email:   data.User.Email,
-			Address: data.User.Address,
+			Name: data.User.Name,
 		},
 	}
 }

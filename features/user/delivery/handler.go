@@ -2,6 +2,7 @@ package delivery
 
 import (
 	"be11/apiclean/features/user"
+	"be11/apiclean/middlewares"
 	"be11/apiclean/utils/helper"
 	"net/http"
 	"strconv"
@@ -21,8 +22,8 @@ func New(e *echo.Echo, usecase user.UsecaseInterface) {
 	e.GET("/users", handler.GetAll)
 	e.POST("/users", handler.PostData)
 	e.GET("/users/:id", handler.GetById)
-	e.PUT("/users/:id", handler.PutData)
-	e.DELETE("/users/:id", handler.DeleteData)
+	e.PUT("/users", handler.PutData, middlewares.JWTMiddleware())
+	e.DELETE("/users", handler.DeleteData, middlewares.JWTMiddleware())
 }
 
 func (delivery *UserDelivery) GetAll(c echo.Context) error {
@@ -64,11 +65,8 @@ func (delivery *UserDelivery) GetById(c echo.Context) error {
 }
 
 func (delivery *UserDelivery) PutData(c echo.Context) error {
-	id := c.Param("id")
-	idConv, errConv := strconv.Atoi(id)
-	if errConv != nil {
-		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("id must be number"))
-	}
+
+	idToken := middlewares.ExtractToken(c)
 
 	var dataUpdate UserRequest
 	errBind := c.Bind(&dataUpdate)
@@ -76,7 +74,7 @@ func (delivery *UserDelivery) PutData(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("error bind data"))
 	}
 
-	row, err := delivery.userUsecase.PutData(idConv, toCore(dataUpdate))
+	row, err := delivery.userUsecase.PutData(idToken, toCore(dataUpdate))
 	if err != nil || row < 1 {
 		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("failed update data"))
 	}
@@ -85,13 +83,9 @@ func (delivery *UserDelivery) PutData(c echo.Context) error {
 }
 
 func (delivery *UserDelivery) DeleteData(c echo.Context) error {
-	id := c.Param("id")
-	idConv, errConv := strconv.Atoi(id)
-	if errConv != nil {
-		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("id must be number"))
-	}
+	idToken := middlewares.ExtractToken(c)
 
-	row, err := delivery.userUsecase.DeleteData(idConv)
+	row, err := delivery.userUsecase.DeleteData(idToken)
 	if err != nil || row == 0 {
 		return c.JSON(http.StatusInternalServerError, helper.FailedResponseHelper("failed delete data"))
 	}
