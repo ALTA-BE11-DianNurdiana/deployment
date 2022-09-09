@@ -55,6 +55,7 @@ func (delivery *WalletDelivery) PostWallet(c echo.Context) error {
 	return c.JSON(http.StatusCreated, helper.SuccessResponseHelper("success insert data"))
 }
 
+// Get wallet by id
 // func (delivery *WalletDelivery) GetById(c echo.Context) error {
 // 	id := c.Param("id")
 // 	idConv, errConv := strconv.Atoi(id)
